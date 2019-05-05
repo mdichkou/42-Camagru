@@ -14,19 +14,21 @@ if(empty($_SESSION['user_id']))
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-    <div class="topnav row">
-        <div class="logo col-sm-4">
-            <img src="img/instagram.svg" >
-            <h4 >Camagru</h4>
-        </div>
-        <div class="login col-sm-4 col-sm-offset-6">
-                <form  action="includes/logout.inc.php" method="post" class="icons">
-                        <a href="camera.php" target="main"><img src="img/camera.svg"alt=""></a>
-                        <a href=""><img src="img/user.svg" alt=""></a>
-                        <button type="submit" name="btnlogout" class="btn">Logout</button>
-                </form>
-        </div>
-    </div>
-      <iframe src="galerie.php" class="ifra" width="100%" height="800" name="main"></iframe>
+<?php include 'header.php';?>
+<div class="layout" >
+  <?php
+  include("config/setup.php");
+  $req = $pdo->prepare("SELECT * FROM `images` ORDER BY `images`.`creating_date` ASC");
+  $req->execute();
+  $i = 0;
+  while ($i < $req->rowCount())
+  {
+    $res = $req->fetch();
+    $name = $res['img_name'];
+    echo '<p><img src="'.$name.'"/></p>';
+    $i++;
+  }
+  ?>
+  </div>
 </body>
 </html>

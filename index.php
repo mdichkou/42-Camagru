@@ -21,7 +21,7 @@ if (isset($_POST['btnlogin'])) {
         if($user_id > 0)
         {
             $_SESSION['user_id'] = $user_id;
-            header("Location: home.php"); 
+            header("Location: home.php");
         }
         else
         {
@@ -45,7 +45,7 @@ if (isset($_POST['btnsignup'])) {
     } else if ($app->isUsername($_POST['username'],$pdo)) {
         $register_error_message = 'Username is already in use!';
     } else {
-        $user_id = $app->Register($_POST['name'], $_POST['email'], $_POST['username'], $_POST['pwd'],$pdo);
+        $user_id = $app->Registre($_POST['username'], $_POST['pwd'], $_POST['email'], $_POST['name'],$pdo);
         $_SESSION['user_id'] = $user_id;
         header("Location: home.php");
     }
