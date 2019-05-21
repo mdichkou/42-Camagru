@@ -15,6 +15,10 @@ class User {
         $pdo->prepare("INSERT INTO users SET username = ?, name = ?, passowrd = ?, email = ? , cle = ?")->execute([$username,$name,$pwdhash,$email,$key]);
         return $pdo->lastInsertId();
     }
+    public function save_comment($imageid,$comment,$userid,$pdo) {
+        $pwdhash = password_hash($pwd, PASSWORD_BCRYPT);
+        $pdo->prepare("INSERT INTO comment SET imageid = ?, userid = ?, comment = ?")->execute([$imageid,$userid,$comment]);
+    }
     public function isUsername($username,$pdo)
     {
         try {

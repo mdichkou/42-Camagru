@@ -19,18 +19,18 @@ $res = $req->fetchall();
 				<img src="img/pdp.svg" alt="">
 			</div>
 <div class="profile-user-settings">
-    <h1 class="profile-user-name"><?=$res[0]['username']?></h1>
+    <h1 class="profile-user-name"><?=htmlspecialchars($res[0]['username'])?></h1>
     <button class="btn profile-edit-btn">Edit Profile</button>
 </div>
 <div class="profile-bio">
 
-				<p><span class="profile-real-name"><?=$res[0]['name']?></span>
+				<p><span class="profile-real-name"><?=htmlspecialchars($res[0]['name'])?></span>
 			</div>
 </div>
 <div class="layout" >
     <div class="gallery">
         <?php foreach ($res as $elem): ?>
-            <div class="gallery-item"><img width="300px" src="<?=$elem['img_name']?>"/></div>
+            <div class="gallery-item"><img width="300px" src="<?=htmlspecialchars($elem['img_name'])?>"/></div>
         <?php endforeach ?>
     </div>
 </div>

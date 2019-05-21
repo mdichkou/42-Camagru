@@ -9,6 +9,9 @@ include("config/setup.php");
 $req = $pdo->prepare("SELECT * FROM `images` i , users u WHERE i.userid = u.id  ORDER BY i.creating_date DESC");
 $req->execute();
 $res = $req->fetchall();
+$reqt = $pdo->prepare("SELECT * FROM comment ORDER BY creating_date DESC");
+$reqt->execute();
+$cmt = $reqt->fetchall();
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -36,13 +39,19 @@ $res = $req->fetchall();
     <div class="content">
         <img src="<?=htmlspecialchars($elem['img_name'])?>" class="content" />
     </div>
-    <form id="comment-form">
-        <input type="text" id="comment-input" class="comment-input" placeholder="Comment">
-        <input type="submit" value="Post" class="comment-btn">
+    <form id="comment-form" action="includes/comments.inc.php" method="post">
+        <input type="text"  name="subject" class="comment-input" placeholder="Comment">
+        <input type="text" name="imageid" class="comment-input" hidden value="<?=htmlspecialchars($elem['imageid'])?>">
+        <input type="submit" name="btncomment" value="Post" class="comment-btn">
       </form>
     </div>
     <ul id="comment-stream" class="comment-stream">
-        </ul>
+        <?php foreach ($cmt as $elemnt): ?>
+            <?php if ($elem['imageid'] == $elemnt['imageid']): ?>
+                <li><?=$elemnt['comment']?></li>
+            <?php endif ?>
+        <?php endforeach ?>
+    </ul>
     </div>
     <?php endforeach ?>
   </div>
