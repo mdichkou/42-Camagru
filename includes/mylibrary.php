@@ -10,9 +10,9 @@ class User {
             return false;
         }
     }
-    public function Registre($username,$pwd,$email,$name,$pdo) {
+    public function Registre($username,$pwd,$email,$name,$key,$pdo) {
         $pwdhash = password_hash($pwd, PASSWORD_BCRYPT);
-        $pdo->prepare("INSERT INTO users SET username = ?, name = ?, passowrd = ?, email = ?")->execute([$username,$name,$pwdhash,$email]);
+        $pdo->prepare("INSERT INTO users SET username = ?, name = ?, passowrd = ?, email = ? , cle = ?")->execute([$username,$name,$pwdhash,$email,$key]);
         return $pdo->lastInsertId();
     }
     public function isUsername($username,$pdo)

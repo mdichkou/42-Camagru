@@ -1,0 +1,19 @@
+<?php
+session_start();
+include('config/setup.php');
+$stmt = $pdo->prepare("SELECT actif FROM users WHERE id = ? ");
+if($stmt->execute([$_SESSION['user_id']])  && $row = $stmt->fetch())
+  {
+   	$actif = $row['actif'];
+  }
+ 
+ 
+if($actif == '1')
+  {
+    header("Location: home.php");
+  }
+else 
+  {
+      echo "A verification email were sent to <b> Your email </b><br/> Please open your email inbox and click the given link so you can login";
+  }
+  ?>

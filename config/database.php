@@ -1,5 +1,5 @@
 <?php
-$DB_DSN = "mysql:host=mysql:3306;dbname=camagru";
-$DB_USER = "root";
-$DB_PASSWORD = "tiger";
+$DB_DSN = 'mysql:dbname=camagru;host=db';
+$DB_USER = 'user';
+$DB_PASSWORD =  'test';
 ?>

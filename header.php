@@ -1,7 +1,7 @@
 <?php
 echo ' <div class="topnav row">
 <div class="logo col-sm-4">
-    <img src="img/instagram.svg" >
+<a href="home.php" ><img src="img/logo.svg" ></a>
     <h4 >Camagru</h4>
 </div>
 <div class="login col-sm-4 col-sm-offset-6">
