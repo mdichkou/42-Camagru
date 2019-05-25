@@ -1,3 +1,10 @@
+<?php
+session_start();
+require("config/setup.php");
+$req = $pdo->prepare("SELECT * FROM `images` , users WHERE images.userid = ? AND users.id = ? ORDER BY `images`.`creating_date` DESC");
+$req->execute([$_SESSION['id'],$_SESSION['id']]);
+$res = $req->fetchall();
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,10 +24,19 @@
       <option value="batman">Batman</option>
       <option value="joker">Joker</option>
       <option value="iron">Iron Man</option>
-    </select></tr></td>
-    <tr><td><button class="btn center-block" name="save" id="save-btn">Capture</button></tr></td>
-    <tr><td><input  type="file" id="inp"></tr></td>
+    </select></td></tr>
+    <tr><td><button class="btn center-block" name="save" id="save-btn">Capture</button></td></tr>
+    <tr><td><button class="btn center-block" name="upload" id="upload-btn">Upload</button></td></tr>
+    <tr><td><input  type="file" id="inp"></td></tr>
+    <tr><td><canvas id="canvas2" width="490px" height="390px"></canvas></td></tr>
     </table>
+</div>
+<div class="col-sm-4" style="overflow-y: scroll; max-height: 390px;">
+<table  >
+<?php foreach ($res as $elem): ?>
+<tr><td><img width="300px" height="200px"src="<?=htmlspecialchars($elem['img_name'])?>"/></td></tr>
+<?php endforeach ?>
+</table>
 </div>
 <script src="js/camera.js"></script>
 </body>

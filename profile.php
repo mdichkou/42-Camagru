@@ -1,8 +1,8 @@
 <?php
 session_start();
-include("config/setup.php");
-$req = $pdo->prepare("SELECT * FROM `images` , users WHERE images.userid = ? AND users.id = ? ORDER BY `images`.`creating_date` ASC");
-$req->execute([$_SESSION['user_id'],$_SESSION['user_id']]);
+require("config/setup.php");
+$req = $pdo->prepare("SELECT * FROM `images` WHERE images.userid = ? ORDER BY `images`.`creating_date` ASC");
+$req->execute([$_SESSION['id']]);
 $res = $req->fetchall();
 ?>
 <!DOCTYPE html>
@@ -15,17 +15,16 @@ $res = $req->fetchall();
 <body>
 <?php include 'header.php';?>
 <div class="profile">
-<div class="profile-image">
-				<img src="img/pdp.svg" alt="">
-			</div>
+    <div class="profile-image">
+        <img src="img/pdp.svg" alt="">
+    </div>
 <div class="profile-user-settings">
-    <h1 class="profile-user-name"><?=htmlspecialchars($res[0]['username'])?></h1>
+    <h1 class="profile-user-name"><?=htmlspecialchars($_SESSION['username'])?></h1>
     <button class="btn profile-edit-btn">Edit Profile</button>
 </div>
-<div class="profile-bio">
-
-				<p><span class="profile-real-name"><?=htmlspecialchars($res[0]['name'])?></span>
-			</div>
+    <div class="profile-bio">
+        <p><span class="profile-real-name"><?=htmlspecialchars($_SESSION['name'])?></span>
+    </div>
 </div>
 <div class="layout" >
     <div class="gallery">

@@ -7,7 +7,7 @@ list($type, $data) = explode(';', $_POST['data']);
 list(, $data)      = explode(',', $data);
 $postdata = $_POST['data'];
 $option = $_POST['option'];
-$filename = date("d_m_Y_H_i_s") . "-" . time() . "-" .$_SESSION['user_id'] . ".png";
+$filename = date("d_m_Y_H_i_s") . "-" . time() . "-" .$_SESSION['id'] . ".png";
 $destinationPath = "$destinationFolder$filename";
 if (empty($_POST['data']))
     exit(json_encode(["success" => false, "reason" => "Not a post data"]));
@@ -41,11 +41,11 @@ if ($option != "off")
 {
     $img2 = imagecreatefrompng($destinationPath);
     imagecopy($img2,$mask,0,0,0,0,200,200);
-    $filename = date("d_m_Y_H_i_s") . "-" . time() . "-" .$_SESSION['user_id']. "-edited" . ".png";
+    $filename = date("d_m_Y_H_i_s") . "-" . time() . "-" .$_SESSION['id']. "-edited" . ".png";
     $destinationPath = "$destinationFolder$filename";
     imagepng($img2,$destinationPath);
 }
 include("../config/setup.php");
-$pdo->prepare("INSERT INTO images SET img_name = ?, userid = ?")->execute(["$folder$filename",$_SESSION['user_id']]);
+$pdo->prepare("INSERT INTO images SET img_name = ?, userid = ?")->execute(["$folder$filename",$_SESSION['id']]);
 exit(json_encode(['success' => "true", 'path' => "$folder$filename"]));
 ?>

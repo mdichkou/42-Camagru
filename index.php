@@ -1,11 +1,11 @@
 <?php
 session_start();
-if(!empty($_SESSION['user_id']))
+if(!empty($_SESSION))
 {
     header("Location: home.php");
 }
-include('includes/mylibrary.php');
-include('config/setup.php');
+require('includes/mylibrary.php');
+require('config/setup.php');
 $app = new User();
 $login_error_message = '';
 
@@ -18,10 +18,10 @@ if (isset($_POST['btnlogin'])) {
     } else if ($password == "") {
         $login_error_message = 'Password field is required!';
     } else {
-        $user_id = $app->Login($username, $password,$pdo);
-        if($user_id > 0)
+        $user = $app->Login($username, $password,$pdo);
+        if(!empty($user))
         {
-            $_SESSION['user_id'] = $user_id;
+            $_SESSION = $user;
             header("Location: login.php");
         }
         else
@@ -30,8 +30,7 @@ if (isset($_POST['btnlogin'])) {
         }
     }
 }
-if (isset($_POST['btnsignup'])) {
-   
+if (isset($_POST['btnsignup'])) { 
     if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
         $register_error_message = 'Invalid email address!';
     } else if ($app->isEmail($_POST['email'],$pdo)) {
@@ -57,8 +56,8 @@ if (isset($_POST['btnsignup'])) {
             Ceci est un mail automatique, Merci de ne pas y répondre.';
             if(mail($destinataire, $sujet, $message, $entete))
             {
-                $user_id = $app->Registre($_POST['username'], $_POST['pwd'], $_POST['email'], $_POST['name'], $verificationCode,$pdo);
-                $_SESSION['user_id'] = $user_id;
+                $user = $app->Registre($_POST['username'], $_POST['pwd'], $_POST['email'], $_POST['name'], $verificationCode,$pdo);
+                $_SESSION = $user;
                 header("Location: login.php");
         }
         else{

@@ -1,11 +1,8 @@
 <?php
 session_start();
- 
-if(empty($_SESSION['user_id']))
-{
-    header("Location: index.php");
-}
-include("config/setup.php");
+require("config/setup.php");
+require('includes/mylibrary.php');
+$app = new User();
 $req = $pdo->prepare("SELECT * FROM `images` i , users u WHERE i.userid = u.id  ORDER BY i.creating_date DESC");
 $req->execute();
 $res = $req->fetchall();
@@ -23,10 +20,9 @@ $cmt = $reqt->fetchall();
 </head>
 <body>
 <?php include 'header.php';?>
-<div class="layout" >
   <?php
   ?>
-  <?php foreach ($res as $elem): ?>
+  <?php foreach ($res as $elem):?>
     <div class="card">
     <div class="card-header">
     <div class="profile-info">
@@ -40,6 +36,14 @@ $cmt = $reqt->fetchall();
         <img src="<?=htmlspecialchars($elem['img_name'])?>" class="content" />
     </div>
     <form id="comment-form" action="includes/comments.inc.php" method="post">
+    <?php
+        $reql = $pdo->prepare("SELECT COUNT(*) as nb FROM likes where picture_id = ?");
+        $reql->execute([$elem['imageid']]);
+        $like = $reql->fetch();
+    ?>
+    <?php echo ($app->isLiked($_SESSION['id'],$elem['imageid'],$pdo) == 1) ? '<button name="btnunlike" class="button-unlike">UnLike</button>' 
+    : '<button name="btnlike" class="button-like">Like</button>'; ?>
+    <span><?=$like['nb']?> Likes</span>
         <input type="text"  name="subject" class="comment-input" placeholder="Comment">
         <input type="text" name="imageid" class="comment-input" hidden value="<?=htmlspecialchars($elem['imageid'])?>">
         <input type="submit" name="btncomment" value="Post" class="comment-btn">
@@ -54,6 +58,5 @@ $cmt = $reqt->fetchall();
     </ul>
     </div>
     <?php endforeach ?>
-  </div>
 </body>
 </html>

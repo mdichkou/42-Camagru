@@ -1,8 +1,8 @@
 <?php
 session_start();
-include('config/setup.php');
+require('config/setup.php');
 $stmt = $pdo->prepare("SELECT actif FROM users WHERE id = ? ");
-if($stmt->execute([$_SESSION['user_id']])  && $row = $stmt->fetch())
+if($stmt->execute([$_SESSION['id']])  && $row = $stmt->fetch())
   {
    	$actif = $row['actif'];
   }

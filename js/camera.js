@@ -1,6 +1,8 @@
 const video = document.getElementById('player');
 const canvasElement = document.getElementById('canvas');
+const canvasElement2 = document.getElementById('canvas2');
 const save = document.getElementById("save-btn");
+const upload = document.getElementById("upload-btn");
 const effects = document.getElementById("effect");
 const mask = document.getElementById("mask");
 const errorMsgElement = document.querySelector('span#errorMsg');
@@ -18,6 +20,9 @@ async function init() {
     errorMsgElement.innerHTML = `navigator.getUserMedia error:${e.toString()}`;
   }
 }
+function actualise() {
+  window.refresh();
+}
 var context = canvasElement.getContext('2d');
 document.getElementById('inp').onchange = function(e) {
   var img = new Image();
@@ -26,9 +31,9 @@ document.getElementById('inp').onchange = function(e) {
   img.src = URL.createObjectURL(this.files[0]);
 };
 function draw() {
-  var canvas = document.getElementById('canvas');
-  canvas.width = this.width;
-  canvas.height = this.height;
+  var canvas = document.getElementById('canvas2');
+  canvas.width = 490;
+  canvas.height = 390;
   var ctx = canvas.getContext('2d');
   ctx.drawImage(this, 0,0);
 }
@@ -63,17 +68,24 @@ if (effects.value == "off")
       init();
       save.addEventListener("click", function() {
         context.drawImage(video, 0, 0);
-        let picture = canvas.toDataURL();
+        let picture = canvasElement.toDataURL();
         var http = new XMLHttpRequest();
         var params = 'data='+encodeURI(picture)+'&option='+encodeURI(effects.value);
         http.open('POST', "http://localhost:8001/42-camagru/api/save_image.php", true);
         http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         http.onreadystatechange = function() {
-          var json = JSON.parse(http.response);
-          var img = new Image();
-          console.log(json.path);
-          img.src = json.path;
-          context.drawImage(img, 0, 0);
+          if(http.readyState == 4 && http.status == 200) {
+          }
+      }
+        http.send(params);
+    });
+      upload.addEventListener("click", function() {
+        let picture = canvasElement2.toDataURL();
+        var http = new XMLHttpRequest();
+        var params = 'data='+encodeURI(picture)+'&option='+encodeURI(effects.value);
+        http.open('POST', "http://localhost:8001/42-camagru/api/save_image.php", true);
+        http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        http.onreadystatechange = function() {
           if(http.readyState == 4 && http.status == 200) {
           }
       }

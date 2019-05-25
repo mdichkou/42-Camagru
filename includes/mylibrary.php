@@ -5,19 +5,25 @@ class User {
         $req->execute([$username]);
         $res = $req->fetch();
         if (password_verify($pwd, $res['passowrd'])) {
-            return $res['id'];
+            return $res;
         } else {
             return false;
         }
     }
     public function Registre($username,$pwd,$email,$name,$key,$pdo) {
         $pwdhash = password_hash($pwd, PASSWORD_BCRYPT);
-        $pdo->prepare("INSERT INTO users SET username = ?, name = ?, passowrd = ?, email = ? , cle = ?")->execute([$username,$name,$pwdhash,$email,$key]);
-        return $pdo->lastInsertId();
+        $req = $pdo->prepare("INSERT INTO users SET username = ?, name = ?, passowrd = ?, email = ? , cle = ?")->execute([$username,$name,$pwdhash,$email,$key]);
+        $res = $req->fetch();
+        return $res;
     }
     public function save_comment($imageid,$comment,$userid,$pdo) {
-        $pwdhash = password_hash($pwd, PASSWORD_BCRYPT);
         $pdo->prepare("INSERT INTO comment SET imageid = ?, userid = ?, comment = ?")->execute([$imageid,$userid,$comment]);
+    }
+    public function save_like($imageid,$userid,$pdo) {
+        $pdo->prepare("INSERT INTO likes SET `user_id` = ?, picture_id = ?")->execute([$userid,$imageid]);
+    }
+    public function delete_like($imageid,$userid,$pdo) {
+        $pdo->prepare("DELETE FROM likes WHERE `user_id` = ? AND picture_id = ?")->execute([$userid,$imageid]);
     }
     public function isUsername($username,$pdo)
     {
@@ -38,6 +44,20 @@ class User {
         try {
             $query = $pdo->prepare("SELECT id FROM users WHERE email = ?");
             $query->execute([$email]);
+            if ($query->rowCount() > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (PDOException $e) {
+            exit($e->getMessage());
+        }
+    }
+    public function isLiked($userid,$imageid,$pdo)
+    {
+        try {
+            $query = $pdo->prepare("SELECT id FROM likes WHERE `user_id` = ? AND picture_id = ?");
+            $query->execute([$userid,$imageid]);
             if ($query->rowCount() > 0) {
                 return true;
             } else {
