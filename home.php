@@ -6,9 +6,6 @@ $app = new User();
 $req = $pdo->prepare("SELECT * FROM `images` i , users u WHERE i.userid = u.id  ORDER BY i.creating_date DESC");
 $req->execute();
 $res = $req->fetchall();
-$reqt = $pdo->prepare("SELECT * FROM comment ORDER BY creating_date DESC");
-$reqt->execute();
-$cmt = $reqt->fetchall();
 ?>
 <!DOCTYPE HTML>
 <html>
@@ -48,14 +45,21 @@ $cmt = $reqt->fetchall();
         <input type="text" name="imageid" class="comment-input" hidden value="<?=htmlspecialchars($elem['imageid'])?>">
         <input type="submit" name="btncomment" value="Post" class="comment-btn">
       </form>
-    </div>
-    <ul id="comment-stream" class="comment-stream">
+      <ul id="comment-stream" class="comment-stream" style="overflow-y: scroll; max-height: 105px;">
+        <?php
+            $reqt = $pdo->prepare("SELECT * FROM comment WHERE imageid = ? ORDER BY creating_date DESC");
+            $reqt->execute([$elem['imageid']]);
+            $cmt = $reqt->fetchall();
+        ?>
         <?php foreach ($cmt as $elemnt): ?>
-            <?php if ($elem['imageid'] == $elemnt['imageid']): ?>
-                <li><?=$elemnt['comment']?></li>
-            <?php endif ?>
+                <li><?php
+                $reqt = $pdo->prepare("SELECT username FROM users WHERE id = ?");
+                $reqt->execute([$elem['userid']]);
+                $name = $reqt->fetch();
+                echo $name['username'] . ":   " . $elemnt['comment'];?></li>
         <?php endforeach ?>
     </ul>
+    </div>
     </div>
     <?php endforeach ?>
 </body>

@@ -12,7 +12,8 @@ class User {
     }
     public function Registre($username,$pwd,$email,$name,$key,$pdo) {
         $pwdhash = password_hash($pwd, PASSWORD_BCRYPT);
-        $req = $pdo->prepare("INSERT INTO users SET username = ?, name = ?, passowrd = ?, email = ? , cle = ?")->execute([$username,$name,$pwdhash,$email,$key]);
+        $req = $pdo->prepare("INSERT INTO users SET username = ?, name = ?, passowrd = ?, email = ? , cle = ?");
+        $req->execute([$username,$name,$pwdhash,$email,$key]);
         $res = $req->fetch();
         return $res;
     }
@@ -24,6 +25,14 @@ class User {
     }
     public function delete_like($imageid,$userid,$pdo) {
         $pdo->prepare("DELETE FROM likes WHERE `user_id` = ? AND picture_id = ?")->execute([$userid,$imageid]);
+    }
+    public function delete_image($imageid,$pdo) {
+        $req = $pdo->prepare("SELECT * FROM images WHERE `imageid` = ?");
+        $req->execute([$imageid]);
+        $res = $req->fetch();
+        if (!empty($res['img_name']))
+            unlink(".." . $res['img_name']);
+        $pdo->prepare("DELETE FROM images WHERE `imageid` = ?")->execute([$imageid]);
     }
     public function isUsername($username,$pdo)
     {
