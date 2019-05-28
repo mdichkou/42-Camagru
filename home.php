@@ -1,6 +1,6 @@
 <?php
 session_start();
-require("config/setup.php");
+require('config/connection.inc.php');
 require('includes/mylibrary.php');
 $app = new User();
 $req = $pdo->prepare("SELECT * FROM `images` i , users u WHERE i.userid = u.id  ORDER BY i.creating_date DESC");
@@ -54,7 +54,7 @@ $res = $req->fetchall();
         <?php foreach ($cmt as $elemnt): ?>
                 <li><?php
                 $reqt = $pdo->prepare("SELECT username FROM users WHERE id = ?");
-                $reqt->execute([$elem['userid']]);
+                $reqt->execute([$elemnt['userid']]);
                 $name = $reqt->fetch();
                 echo $name['username'] . ":   " . $elemnt['comment'];?></li>
         <?php endforeach ?>

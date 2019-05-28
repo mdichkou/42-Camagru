@@ -1,6 +1,6 @@
 <?php
 session_start();
-require("config/setup.php");
+require('config/connection.inc.php');
 require("includes/mylibrary.php");
 $app = new User();
 $req = $pdo->prepare("SELECT * FROM `images` , users WHERE images.userid = ? AND users.id = ? ORDER BY `images`.`creating_date` DESC");

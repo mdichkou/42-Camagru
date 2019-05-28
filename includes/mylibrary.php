@@ -14,7 +14,46 @@ class User {
         $pwdhash = password_hash($pwd, PASSWORD_BCRYPT);
         $req = $pdo->prepare("INSERT INTO users SET username = ?, name = ?, passowrd = ?, email = ? , cle = ?");
         $req->execute([$username,$name,$pwdhash,$email,$key]);
+        $id = $pdo->lastInsertId();
+        return $id;
+    }
+    public function Update_profile($username,$pwd,$newpwd,$email,$mailing,$pdo) {
+        $req = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+        $req->execute([$_SESSION['id']]);
         $res = $req->fetch();
+        if (password_verify($pwd, $res['passowrd'])) {
+            if ($username != $res['username'])
+            {
+                $pdo->prepare("UPDATE users SET username = ? WHERE id = ?")->execute([$username,$_SESSION['id']]);
+                $_SESSION['username'] = $username;
+            }
+            if ($email != $res['email']) {
+                $pdo->prepare("UPDATE users SET email = ? WHERE id = ?")->execute([$email,$_SESSION['id']]);
+                $_SESSION['email'] = $email;
+            }
+            if (empty($mailing) && $_SESSION['mailing'] != 0)
+            {
+                $pdo->prepare("UPDATE users SET mailing = 0 WHERE id = ?")->execute([$_SESSION['id']]);
+                $_SESSION['mailing'] = 0;
+            } else if (!empty($mailing) && $_SESSION['mailing'] != 1){
+                $pdo->prepare("UPDATE users SET mailing = 1 WHERE id = ?")->execute([$_SESSION['id']]);
+                $_SESSION['mailing'] = 1;
+            }
+            if (!empty($newpwd))
+            {
+                $pwdhash = password_hash($newpwd, PASSWORD_BCRYPT);
+                $pdo->prepare("UPDATE users SET passowrd = ? WHERE id = ?")->execute([$pwdhash,$_SESSION['id']]);
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public function find_user($userid,$pdo)
+    {
+        $query = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+        $query->execute([$userid]);
+        $res = $query->fetch();
         return $res;
     }
     public function save_comment($imageid,$comment,$userid,$pdo) {
@@ -32,6 +71,8 @@ class User {
         $res = $req->fetch();
         if (!empty($res['img_name']))
             unlink(".." . $res['img_name']);
+        $pdo->prepare("DELETE FROM likes WHERE  picture_id = ?")->execute([$imageid]);
+        $pdo->prepare("DELETE FROM comment WHERE  imageid = ?")->execute([$imageid]);
         $pdo->prepare("DELETE FROM images WHERE `imageid` = ?")->execute([$imageid]);
     }
     public function isUsername($username,$pdo)

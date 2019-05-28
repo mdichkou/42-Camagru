@@ -1,5 +1,5 @@
 <?php
-include('config/setup.php');
+require('config/connection.inc.php');
 $login = $_GET['log'];
 $cle = $_GET['cle'];
 $stmt = $pdo->prepare("SELECT cle,actif FROM users WHERE username = ?");

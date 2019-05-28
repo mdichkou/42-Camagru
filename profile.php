@@ -1,6 +1,6 @@
 <?php
 session_start();
-require("config/setup.php");
+require('config/connection.inc.php');
 $req = $pdo->prepare("SELECT * FROM `images` WHERE images.userid = ? ORDER BY `images`.`creating_date` ASC");
 $req->execute([$_SESSION['id']]);
 $res = $req->fetchall();
@@ -18,10 +18,12 @@ $res = $req->fetchall();
     <div class="profile-image">
         <img src="img/pdp.svg" alt="">
     </div>
+<form method="post" action="edite_profile.php" >
 <div class="profile-user-settings">
     <h1 class="profile-user-name"><?=htmlspecialchars($_SESSION['username'])?></h1>
     <button class="btn profile-edit-btn">Edit Profile</button>
 </div>
+</form>
     <div class="profile-bio">
         <p><span class="profile-real-name"><?=htmlspecialchars($_SESSION['name'])?></span>
     </div>

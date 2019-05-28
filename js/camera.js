@@ -87,6 +87,7 @@ if (effects.value == "off")
         http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         http.onreadystatechange = function() {
           if(http.readyState == 4 && http.status == 200) {
+            console.log(picture);
           }
       }
         http.send(params);

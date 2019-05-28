@@ -5,7 +5,7 @@ if(!empty($_SESSION))
     header("Location: home.php");
 }
 require('includes/mylibrary.php');
-require('config/setup.php');
+require('config/connection.inc.php');
 $app = new User();
 $login_error_message = '';
 
@@ -13,21 +13,15 @@ $register_error_message = '';
 if (isset($_POST['btnlogin'])) {
     $username = $_POST['username'];
     $password = $_POST['password'];
-    if ($username == "") {
-        $login_error_message = 'Username field is required!';
-    } else if ($password == "") {
-        $login_error_message = 'Password field is required!';
-    } else {
-        $user = $app->Login($username, $password,$pdo);
-        if(!empty($user))
-        {
-            $_SESSION = $user;
-            header("Location: login.php");
-        }
-        else
-        {
-            $login_error_message = 'Invalid login details!';
-        }
+    $user = $app->Login($username, $password,$pdo);
+    if(!empty($user))
+    {
+        $_SESSION = $user;
+        header("Location: login.php");
+    }
+    else
+    {
+        $login_error_message = 'Invalid login details!';
     }
 }
 if (isset($_POST['btnsignup'])) { 
@@ -44,7 +38,7 @@ if (isset($_POST['btnsignup'])) {
             $sujet = "Activer votre compte" ;
             $entete = "From: mdichkou@camagru.com" ;
 
-            $message = 'Bienvenue sur VotreSite,
+            $message = 'Bienvenue sur Camagru,
              
             Pour activer votre compte, veuillez cliquer sur le lien ci dessous
             ou copier/coller dans votre navigateur internet.
@@ -56,8 +50,8 @@ if (isset($_POST['btnsignup'])) {
             Ceci est un mail automatique, Merci de ne pas y répondre.';
             if(mail($destinataire, $sujet, $message, $entete))
             {
-                $user = $app->Registre($_POST['username'], $_POST['pwd'], $_POST['email'], $_POST['name'], $verificationCode,$pdo);
-                $_SESSION = $user;
+                $userid = $app->Registre($_POST['username'], $_POST['pwd'], $_POST['email'], $_POST['name'], $verificationCode,$pdo);
+                $_SESSION = $app->find_user($userid,$pdo);
                 header("Location: login.php");
         }
         else{
@@ -105,7 +99,7 @@ if (isset($_POST['btnsignup'])) {
 <div class="row signup_row">
     <div class="bg col-sm-4 col-sm-offset-4">
             <p class="txt_signup">
-                <b>Sign up</b> to see photos <br>and videos from your friends
+                <b>Sign up</b> to see photos <br> from your friends
             </p>
             <?php
             if ($register_error_message != "") {
@@ -113,10 +107,10 @@ if (isset($_POST['btnsignup'])) {
             }
             ?>
             <form action="index.php" method="post">
-                <input type="text" name="email" placeholder="Mobile Number or Email" required  class="form-control"><br>
+                <input type="text" name="email" placeholder=" Email" required  class="form-control"><br>
                 <input type="text" name="name" placeholder="Full Name" required class="form-control"><br>
                 <input type="text" name="username" placeholder="Username" required class="form-control"><br>
-                <input type="password" name="pwd" placeholder="Password" required class="form-control"><br>
+                <input type="password" name="pwd" placeholder="Password" class="form-control"><br>
                 <button type="submit" name="btnsignup" class="btn center-block">Sign up</button><br>
             </form>
     </div>

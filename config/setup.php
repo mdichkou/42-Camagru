@@ -1,46 +1,46 @@
 <?php
-include("database.php");
-try {
-    $pdo = new PDO($DB_DSN, $DB_USER, $DB_PASSWORD);
-} catch (PDOException $e) {
-    echo 'Connection failed: ' . $e->getMessage();
-}
-// $usereq = ("CREATE TABLE users (
-//     id INT(11) AUTO_INCREMENT PRIMARY KEY NOT NULL,
-//     email VARCHAR(255) NOT NULL,
-//     username VARCHAR(255) NOT NULL,
-//     password VARCHAR(255) NOT NULL,
-//     check_email BOOLEAN default 1 null,
-//     confirmation_token VARCHAR(60) NULL,
-//     confirmed_at DATETIME NULL,
-//     reset_token VARCHAR(60) NULL,
-//     reset_at DATETIME NULL,
-//     remember_token VARCHAR(250) NULL
-//    )");
+require('connection.inc.php');
+$usereq = ("CREATE TABLE `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `passowrd` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `cle` varchar(255) NOT NULL,
+  `actif` int(11) NOT NULL DEFAULT '0',
+  `mailing` int(11) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+)");
 
-//    $picturereq = (" CREATE TABLE pictures (
-//        id INT(11) AUTO_INCREMENT PRIMARY KEY NOT NULL,
-//        picurl LONGTEXT NOT NULL,
-//        id_user INT(11) NOT NULL,
-//        take_at DATETIME NOT NULL
-//    )");
+   $picturereq = (" CREATE TABLE `images` (
+    `imageid` int(11) NOT NULL AUTO_INCREMENT,
+    `img_name` varchar(255) NOT NULL,
+    `userid` int(11) NOT NULL,
+    `creating_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`imageid`)
+  )");
    
-//    $commentreq = (" CREATE TABLE comments (
-//        id INT(11) AUTO_INCREMENT PRIMARY KEY NOT NULL,
-//        comments LONGTEXT NOT NULL,
-//        user_id INT(11) NOT NULL,
-//        picture_id INT(11) NOT NULL,
-//        commented_at DATETIME NOT NULL
-//    )");
+   $commentreq = (" CREATE TABLE `comment` (
+    `comment` varchar(255) NOT NULL,
+    `imageid` int(11) NOT NULL,
+    `userid` int(11) NOT NULL,
+    `creating_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+  )");
    
-//    $likereq = (" CREATE TABLE likes (
-//        id INT(11) AUTO_INCREMENT PRIMARY KEY NOT NULL,
-//        user_id INT(11) NOT NULL,
-//        picture_id INT(11) NOT NULL,
-//        liked BOOLEAN NOT NULL DEFAULT 0,
-//        liked_at DATETIME NOT NULL
-//    )");
+   $likereq = (" CREATE TABLE `likes` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `user_id` int(11) NOT NULL,
+    `picture_id` int(11) NOT NULL,
+    `liked_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+  )");
    
-//    if ($pdo->query($usereq) && $pdo->query($picturereq) && $pdo->query($commentreq))
-//       die("All table are created successfully");
+   if ($pdo->query($usereq) && $pdo->query($picturereq) && $pdo->query($commentreq) && $pdo->query($likereq))
+   {
+      header("Location: ../index.php");
+   }
+    else
+    {
+        die("Failed to create tables");
+    }
 ?>

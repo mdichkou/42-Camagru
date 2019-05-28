@@ -1,6 +1,6 @@
 <?php
 session_start();
-require('config/setup.php');
+require("includes/connection.inc.php");
 $stmt = $pdo->prepare("SELECT actif FROM users WHERE id = ? ");
 if($stmt->execute([$_SESSION['id']])  && $row = $stmt->fetch())
   {
