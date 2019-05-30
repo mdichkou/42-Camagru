@@ -48,7 +48,7 @@ if (isset($_POST['save']) || isset($_POST['upload'])) {
 <?php foreach ($res as $elem): ?>
 <tr><td><img width="300px" height="200px"src="<?=htmlspecialchars($elem['img_name'])?>"/>
 <form action="camera.php" method="post">
-    <input type="text" name="imageid" class="comment-input" hidden value="<?=htmlspecialchars($elem['imageid'])?>">
+    <input type="text" name="imageid" hidden value="<?=htmlspecialchars($elem['imageid'])?>">
     <button class="btn delete-btn center-block" name="btndelete">Delete</button>
     </form></td></tr>
 <?php endforeach ?>

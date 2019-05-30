@@ -7,23 +7,7 @@ if(!empty($_SESSION))
 require('includes/mylibrary.php');
 require('config/connection.inc.php');
 $app = new User();
-$login_error_message = '';
-
 $register_error_message = '';
-if (isset($_POST['btnlogin'])) {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-    $user = $app->Login($username, $password,$pdo);
-    if(!empty($user))
-    {
-        $_SESSION = $user;
-        header("Location: login.php");
-    }
-    else
-    {
-        $login_error_message = 'Invalid login details!';
-    }
-}
 if (isset($_POST['btnsignup'])) { 
     if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
         $register_error_message = 'Invalid email address!';
@@ -52,7 +36,7 @@ if (isset($_POST['btnsignup'])) {
             {
                 $userid = $app->Registre($_POST['username'], $_POST['pwd'], $_POST['email'], $_POST['name'], $verificationCode,$pdo);
                 $_SESSION = $app->find_user($userid,$pdo);
-                header("Location: login.php");
+                header("Location: includes/login.inc.php");
         }
         else{
             echo 'false';
@@ -68,34 +52,7 @@ if (isset($_POST['btnsignup'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-    <div class="topnav row z-depth-5">
-        <div class="logo col-sm-6">
-            <img src="img/logo.svg" >
-            <h4 >Camagru</h4>
-        </div>
-        <div class="login col-sm-6">
-            <div class="row">
-            <?php
-            if ($login_error_message != "") {
-                echo ' <div class="alert alert-danger">
-                <strong>Error: </strong> ' . $login_error_message . ' </div> ';
-            }
-            ?>
-                <form  action="index.php" method="post">
-                    <div class="col-sm-4">
-                        <input type="text" name="username" placeholder="Username" class="form-control">
-                    </div>
-                    <div class="password col-sm-4">
-                        <input type="password" name="password" placeholder="Password" class="form-control">
-                    <a>Forget Password?</a>
-                    </div>
-                    <div class="col-sm-4">
-                        <button type="submit" name="btnlogin" class="btn">Login</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+<?php include 'includes/header.inc.php';?>
 <div class="row signup_row">
     <div class="bg col-sm-4 col-sm-offset-4">
             <p class="txt_signup">
@@ -107,10 +64,10 @@ if (isset($_POST['btnsignup'])) {
             }
             ?>
             <form action="index.php" method="post">
-                <input type="text" name="email" placeholder=" Email" required  class="form-control"><br>
-                <input type="text" name="name" placeholder="Full Name" required class="form-control"><br>
-                <input type="text" name="username" placeholder="Username" required class="form-control"><br>
-                <input type="password" name="pwd" placeholder="Password" class="form-control"><br>
+                <input type="text" name="email" placeholder=" Email" required  class="btn_max form-control"><br>
+                <input type="text" name="name" placeholder="Full Name" required class="btn_max form-control"><br>
+                <input type="text" name="username" placeholder="Username" required class="btn_max form-control"><br>
+                <input type="password" name="pwd" placeholder="Password" class="btn_max form-control"><br>
                 <button type="submit" name="btnsignup" class="btn center-block">Sign up</button><br>
             </form>
     </div>

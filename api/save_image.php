@@ -45,7 +45,7 @@ if ($option != "off")
     $destinationPath = "$destinationFolder$filename";
     imagepng($img2,$destinationPath);
 }
-include("../config/setup.php");
+require('../config/connection.inc.php');
 $pdo->prepare("INSERT INTO images SET img_name = ?, userid = ?")->execute(["$folder$filename",$_SESSION['id']]);
 exit(json_encode(['success' => "true", 'path' => "$folder$filename"]));
 ?>

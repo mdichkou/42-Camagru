@@ -1,6 +1,6 @@
 <?php
 session_start();
-require("includes/connection.inc.php");
+require("../config/connection.inc.php");
 $stmt = $pdo->prepare("SELECT actif FROM users WHERE id = ? ");
 if($stmt->execute([$_SESSION['id']])  && $row = $stmt->fetch())
   {
@@ -10,7 +10,7 @@ if($stmt->execute([$_SESSION['id']])  && $row = $stmt->fetch())
  
 if($actif == '1')
   {
-    header("Location: home.php");
+    header("Location: ../home.php");
   }
 else 
   {

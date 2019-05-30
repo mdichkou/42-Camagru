@@ -31,7 +31,7 @@ class User {
                 $pdo->prepare("UPDATE users SET email = ? WHERE id = ?")->execute([$email,$_SESSION['id']]);
                 $_SESSION['email'] = $email;
             }
-            if (empty($mailing) && $_SESSION['mailing'] != 0)
+            if (empty($mailing) && $_SESSION['mailing'] !== 0)
             {
                 $pdo->prepare("UPDATE users SET mailing = 0 WHERE id = ?")->execute([$_SESSION['id']]);
                 $_SESSION['mailing'] = 0;

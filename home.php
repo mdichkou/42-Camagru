@@ -16,11 +16,14 @@ $res = $req->fetchall();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-<?php include 'header.php';?>
-  <?php
-  ?>
+<?php 
+if (empty($_SESSION))
+    include 'includes/header.inc.php';
+else
+    include 'header.php';
+?>
   <?php foreach ($res as $elem):?>
-    <div class="card">
+    <div class="card ">
     <div class="card-header">
     <div class="profile-info">
         <div class="name"><?=htmlspecialchars($elem['username'])?></div>
@@ -30,7 +33,7 @@ $res = $req->fetchall();
     </div>
     </div>
     <div class="content">
-        <img src="<?=htmlspecialchars($elem['img_name'])?>" class="content" />
+        <img src="<?=htmlspecialchars($elem['img_name'])?>" class="content img-fluid" />
     </div>
     <form id="comment-form" action="includes/comments.inc.php" method="post">
     <?php
@@ -38,12 +41,17 @@ $res = $req->fetchall();
         $reql->execute([$elem['imageid']]);
         $like = $reql->fetch();
     ?>
-    <?php echo ($app->isLiked($_SESSION['id'],$elem['imageid'],$pdo) == 1) ? '<button name="btnunlike" class="button-unlike">UnLike</button>' 
-    : '<button name="btnlike" class="button-like">Like</button>'; ?>
+    <?php 
+    if (!empty($_SESSION))
+        echo ($app->isLiked($_SESSION['id'],$elem['imageid'],$pdo) == 1) ? '<button name="btnunlike" class="button-unlike">UnLike</button>' 
+    : '<button name="btnlike" class="button-like">Like</button>';
+    else
+        echo '<button name="btnlike" class="button-like" disabled>Like</button>';
+     ?>
     <span><?=$like['nb']?> Likes</span>
         <input type="text"  name="subject" class="comment-input" placeholder="Comment">
-        <input type="text" name="imageid" class="comment-input" hidden value="<?=htmlspecialchars($elem['imageid'])?>">
-        <input type="submit" name="btncomment" value="Post" class="comment-btn">
+        <input type="text" name="imageid" hidden value="<?=htmlspecialchars($elem['imageid'])?>">
+        <?php echo (empty($_SESSION)) ? '<input type="submit" name="btncomment" value="Post" class="comment-btn" disabled>' : '<input type="submit" name="btncomment" value="Post" class="comment-btn">' ?>
       </form>
       <ul id="comment-stream" class="comment-stream" style="overflow-y: scroll; max-height: 105px;">
         <?php
@@ -59,7 +67,6 @@ $res = $req->fetchall();
                 echo $name['username'] . ":   " . $elemnt['comment'];?></li>
         <?php endforeach ?>
     </ul>
-    </div>
     </div>
     <?php endforeach ?>
 </body>

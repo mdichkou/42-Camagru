@@ -1,6 +1,6 @@
 <?php
 session_start();
-require("../includes/connection.inc.php");
+require("../config/connection.inc.php");
 require('mylibrary.php');
 $app = new User();
 if(empty($_SESSION['id']))
