@@ -43,6 +43,7 @@ if (isset($_POST['btnlogin'])) {
                 <input type="text" name="username" placeholder="Username" required class="btn_max form-control"><br>
                 <input type="password" name="password" placeholder="Password" required class="btn_max form-control"><br>
                 <button type="submit" name="btnlogin" class="btn center-block">Sign in</button><br>
+                <a class="center-block" href="">Forgot password?</a>
             </form>
     </div>
 </div>

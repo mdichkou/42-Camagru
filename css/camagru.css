@@ -188,8 +188,8 @@ img {
   }
   .image2 {
     position: absolute;
-    left: 250px;
-    top: 100px;
+    left: 0px;
+    top: 0px;
     z-index: 3;
   }
   .dis {

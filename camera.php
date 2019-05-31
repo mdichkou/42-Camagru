@@ -26,20 +26,19 @@ if (isset($_POST['save']) || isset($_POST['upload'])) {
 <div class="col-sm-4 col-sm-offset-4" style="margin-top: 20px;">
 <form action="camera.php" method="post">
 <table>
-<tr><td width="490px" height="390px"><canvas id="canvas" hidden width="490px" height="390px"></canvas>
+<tr><td width="490px" height="390px"><canvas id="canvas" width="490px" height="390px"></canvas>
 <img class="image2" id="mask" src="" style="visibility: hidden;" width="200px" height="200px"/>
       <video id="player" class="" autoplay ></video></td></tr>
-      <tr><td><select class="btn-primary center-block" id="effect" >
+      <tr><td><select class="btn-primary center-block" id="effect" disabled>
       <option value="off">Select your mask</option>
       <option value="batman">Batman</option>
       <option value="joker">Joker</option>
       <option value="iron">Iron Man</option>
     </select></td></tr>
-    <tr><td><button class="btn center-block" name="save" id="save-btn">Capture</button>
+    <tr><td><button class="btn center-block" name="save" disabled id="save-btn">Capture</button>
     </td></tr>
-    <tr><td><button class="btn center-block" name="upload" id="upload-btn">Upload</button></td></tr>
+    <tr><td><button class="btn center-block" name="upload" disabled id="upload-btn">Upload</button></td></tr>
     <tr><td><input  type="file" id="inp"></td></tr>
-    <tr><td><canvas id="canvas2" width="490px" height="390px"></canvas></td></tr>
 </table>
 </form>
 </div>
