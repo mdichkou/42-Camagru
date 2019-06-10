@@ -1,5 +1,6 @@
 <?php
 session_start();
+$id = $_SESSION['id'];
 $folder = "/42-Camagru/images/";
 $destinationFolder = $_SERVER['DOCUMENT_ROOT'] . $folder;
 $maxFileSize = 2 * 1024 * 1024;
@@ -7,16 +8,22 @@ list($type, $data) = explode(';', $_POST['data']);
 list(, $data)      = explode(',', $data);
 $postdata = $_POST['data'];
 $option = $_POST['option'];
-$filename = date("d_m_Y_H_i_s") . "-" . time() . "-" .$_SESSION['id'] . ".png";
-$destinationPath = "$destinationFolder$filename";
 if (empty($_POST['data']))
     exit(json_encode(["success" => false, "reason" => "Not a post data"]));
+if (strpos($postdata,"image/png"))
+    $ext = ".png";
+if (strpos($postdata,"image/jpeg"))
+    $ext = ".jpeg";
+$filename = date("d_m_Y_H_i_s") . "-" . time() . "-" ."$id$ext";
+$destinationPath = "$destinationFolder$filename";
 function generateImage($img,$file)
 {
     $img = str_replace('data:image/png;base64,', '', $img);
     $img = str_replace('data:image/jpeg;base64,', '', $img);
     $img = str_replace(' ', '+', $img);
     $img = base64_decode($img);
+    if(strlen($img) > $maxFileSize)
+      exit(json_encode(['success'=>false, 'reason'=>"file size exceeds {$maxFileSize} Mb"]));
     $success = file_put_contents($file, $img);
     return $success;
 }
@@ -41,11 +48,11 @@ if ($option != "off")
 {
     $img2 = imagecreatefrompng($destinationPath);
     imagecopy($img2,$mask,0,0,0,0,200,200);
-    $filename = date("d_m_Y_H_i_s") . "-" . time() . "-" .$_SESSION['id']. "-edited" . ".png";
+    $filename = date("d_m_Y_H_i_s") . "-" . time() . "-" .$id. "-edited" . $ext;
     $destinationPath = "$destinationFolder$filename";
     imagepng($img2,$destinationPath);
 }
 require('../config/connection.inc.php');
-$pdo->prepare("INSERT INTO images SET img_name = ?, userid = ?")->execute(["$folder$filename",$_SESSION['id']]);
+$pdo->prepare("INSERT INTO images SET img_name = ?, userid = ?")->execute(["$folder$filename",$id]);
 exit(json_encode(['success' => "true", 'path' => "$folder$filename"]));
 ?>

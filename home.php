@@ -69,5 +69,6 @@ else
     </ul>
     </div>
     <?php endforeach ?>
+	<?php include 'footer.php';?>
 </body>
 </html>

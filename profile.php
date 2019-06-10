@@ -35,5 +35,6 @@ $res = $req->fetchall();
         <?php endforeach ?>
     </div>
 </div>
+<?php include 'footer.php';?>
 </body>
 </html>

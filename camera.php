@@ -1,5 +1,7 @@
 <?php
 session_start();
+if (empty($_SESSION))
+  header("Location: index.php");
 require('config/connection.inc.php');
 require("includes/mylibrary.php");
 $app = new User();
@@ -11,7 +13,7 @@ if (isset($_POST['btndelete'])) {
     header("Location: camera.php");
 }
 if (isset($_POST['save']) || isset($_POST['upload'])) {
-    header("Location: camera.php");
+   header("Location: camera.php");
 }
 ?>
 <!DOCTYPE html>
@@ -35,9 +37,9 @@ if (isset($_POST['save']) || isset($_POST['upload'])) {
       <option value="joker">Joker</option>
       <option value="iron">Iron Man</option>
     </select></td></tr>
-    <tr><td><button class="btn center-block" name="save" disabled id="save-btn">Capture</button>
+    <tr><td><input type="submit" class="btn center-block" name="save" disabled id="save-btn" value="Capture"/>
     </td></tr>
-    <tr><td><button class="btn center-block" name="upload" disabled id="upload-btn">Upload</button></td></tr>
+    <tr><td><input type="submit" class="btn center-block" name="upload" disabled id="upload-btn"value="Upload"/></td></tr>
     <tr><td><input  type="file" id="inp"></td></tr>
 </table>
 </form>
@@ -48,11 +50,12 @@ if (isset($_POST['save']) || isset($_POST['upload'])) {
 <tr><td><img width="300px" height="200px"src="<?=htmlspecialchars($elem['img_name'])?>"/>
 <form action="camera.php" method="post">
     <input type="text" name="imageid" hidden value="<?=htmlspecialchars($elem['imageid'])?>">
-    <button class="btn delete-btn center-block" name="btndelete">Delete</button>
+    <input type="submit" class="btn delete-btn center-block" name="btndelete" value="Delete"/>
     </form></td></tr>
 <?php endforeach ?>
 </table>
 </div>
 <script src="js/camera.js"></script>
+<?php include 'footer.php';?>
 </body>
 </html>
