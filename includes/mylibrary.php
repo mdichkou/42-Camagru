@@ -17,32 +17,60 @@ class User {
         $id = $pdo->lastInsertId();
         return $id;
     }
+    public function checkPassword($pwd) {
+        $error = true;
+        if (strlen($pwd) < 8) {
+            $error = false;
+        }
+
+        if (!preg_match("#[0-9]+#", $pwd)) {
+            $error = false;
+        }
+
+        if (!preg_match("#[a-zA-Z]+#", $pwd)) {
+            $error = false;
+        }     
+        return ($error);
+    }
     public function Update_profile($username,$pwd,$newpwd,$email,$mailing,$pdo) {
         $req = $pdo->prepare("SELECT * FROM users WHERE id = ?");
         $req->execute([$_SESSION['id']]);
         $res = $req->fetch();
+        $message = "";
         if (password_verify($pwd, $res['passowrd'])) {
             if ($username != $res['username'])
             {
+                $message .= "\nyour username are modified";
                 $pdo->prepare("UPDATE users SET username = ? WHERE id = ?")->execute([$username,$_SESSION['id']]);
                 $_SESSION['username'] = $username;
             }
             if ($email != $res['email']) {
+                $message .= "\nyour email are modified";
                 $pdo->prepare("UPDATE users SET email = ? WHERE id = ?")->execute([$email,$_SESSION['id']]);
                 $_SESSION['email'] = $email;
             }
             if (empty($mailing) && $_SESSION['mailing'] !== 0)
             {
+                $message .= "\nyour mailing option are modified";
                 $pdo->prepare("UPDATE users SET mailing = 0 WHERE id = ?")->execute([$_SESSION['id']]);
                 $_SESSION['mailing'] = 0;
             } else if (!empty($mailing) && $_SESSION['mailing'] != 1){
+                $message .= "\nyour mailing option are modified";
                 $pdo->prepare("UPDATE users SET mailing = 1 WHERE id = ?")->execute([$_SESSION['id']]);
                 $_SESSION['mailing'] = 1;
             }
             if (!empty($newpwd))
             {
+                $message .= "\nyour password are modified";
                 $pwdhash = password_hash($newpwd, PASSWORD_BCRYPT);
                 $pdo->prepare("UPDATE users SET passowrd = ? WHERE id = ?")->execute([$pwdhash,$_SESSION['id']]);
+            }
+            if ($message != "")
+            {
+                $destinataire =  $res['email'];
+                $sujet = "Information changed";
+                $entete = "From: mdichkou@camagru.com" ;
+                mail($destinataire, $sujet, $message, $entete);
             }
             return true;
         } else {

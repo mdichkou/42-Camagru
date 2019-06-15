@@ -1,5 +1,9 @@
 <?php
 session_start();
+if(!empty($_SESSION['id']))
+{
+    header("Location: home.php");
+}
 require('includes/mylibrary.php');
 require('config/connection.inc.php');
 $app = new User();
@@ -28,6 +32,7 @@ if (isset($_POST['btnlogin'])) {
 </head>
 <body>
 <?php include 'includes/header.inc.php';?>
+<main>
 <div class="row signup_row">
     <div class="bg col-sm-4 col-sm-offset-4">
             <p class="txt_signup">
@@ -43,10 +48,11 @@ if (isset($_POST['btnlogin'])) {
                 <input type="text" name="username" placeholder="Username" required class="btn_max form-control"><br>
                 <input type="password" name="password" placeholder="Password" required class="btn_max form-control"><br>
                 <button type="submit" name="btnlogin" class="btn center-block">Sign in</button><br>
-                <a class="center-block" href="">Forgot password?</a>
+                <a class="center-block" href="forgotpw.php">Forgot password?</a>
             </form>
     </div>
 </div>
+</main>
 <?php include 'footer.php';?>
-</body>
+<body>
 </html>

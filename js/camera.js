@@ -5,6 +5,8 @@ const upload = document.getElementById("upload-btn");
 const effects = document.getElementById("effect");
 const input = document.getElementById('inp');
 const mask = document.getElementById('mask');
+const myForm = document.getElementById('myForm');
+const checkbox = document.getElementById('myCheckbox');
 var check = true;
 const constraints = {
   audio: false,
@@ -17,30 +19,35 @@ async function init() {
     const stream = await navigator.mediaDevices.getUserMedia(constraints);
     check = true;
     input.disabled = true;
+    upload.style.display = 'none';
     handleSuccess(stream);
   } catch (e) {
-    check = false;
-    input.disabled = false;
     console.log('camera not allowed');
   }
 }
 function actualise() {
-  window.refresh();
+  // location.reload();
 }
 var context = canvasElement.getContext('2d');
 input.onchange = function(e) {
   var img = new Image();
+  if(this.files[0].size > 3072000){
+    alert("Image is too big!");
+    this.value = "";
+ } else
+ {
   img.onload = draw;
   img.onerror = failed;
   effects.disabled = false;
   img.src = URL.createObjectURL(this.files[0]);
+ }
 };
 function draw() {
-  canvasElement.style.display = 'block';
   context.drawImage(this, 0,0,490,390);
 }
 function failed() {
-  console.error("The provided file couldn't be loaded as an Image media");
+  effects.disabled = true;
+  alert("The provided file couldn't be loaded as an Image media");
 }
 function handleSuccess(stream) {
   window.stream = stream;
@@ -51,8 +58,8 @@ function handleSuccess(stream) {
 function postpicture () {
   let picture = canvasElement.toDataURL();
   var http = new XMLHttpRequest();
-  var params = 'data='+encodeURI(picture)+'&option='+encodeURI(effects.value)+'&id='+encodeURI(effects.value);
-  http.open('POST', "http://localhost:8001/42-camagru/api/save_image.php", true);
+  var params = 'data='+encodeURI(picture)+'&option='+encodeURI(effects.value);
+  http.open('POST', "http://localhost:8001/mdichkou/api/save_image.php", true);
   http.withCredentials = true;
   http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
   http.onreadystatechange = function() {
@@ -84,7 +91,6 @@ if (effects.value == "joker")
 {
   mask.style.visibility = 'visible';
   mask.setAttribute("src","img/joker.png");
-  postpicture();
   if (check == true)
       save.disabled = false;
     else
@@ -93,15 +99,45 @@ if (effects.value == "joker")
 if (effects.value == "off")
 {
   mask.style.visibility = 'hidden';
-  if (check == true)
+  mask.setAttribute("src","");
       save.disabled = true;
-    else
       upload.disabled = true;
 }
 };
-      init();
-      save.addEventListener("click", function() {
-        context.drawImage(video, 0, 0);
-        postpicture();
-    });
-    upload.addEventListener("click", postpicture,true);
+function OnChangeCheckbox (checkbox) {
+  if (checkbox.checked) {
+    video.style.display = 'none';
+    mask.style.visibility = 'hidden';
+    effects.selectedIndex = "0";
+    mask.setAttribute("src","");
+    save.disabled = true;
+    upload.disabled = true;
+    canvasElement.style.display = 'block';
+    check = false;
+    input.disabled = false;
+    effects.disabled = true;
+    upload.style.display = 'block';
+    save.style.display = 'none';
+  }
+  else {
+    video.style.display = 'block';
+    save.style.display = 'block';
+    effects.selectedIndex = "0";
+    mask.style.visibility = 'hidden';
+    save.disabled = true;
+    input.value = "";
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    upload.disabled = true;
+    mask.setAttribute("src","");
+    canvasElement.style.display = 'none';
+    upload.style.display = 'none';
+    check = true;
+    input.disabled = true;
+    effects.disabled = false;
+  }
+}
+init();
+save.addEventListener("click", function() {
+context.drawImage(video, 0, 0);
+postpicture();},false);
+upload.addEventListener("click", postpicture,false);

@@ -1,6 +1,10 @@
 <?php
 session_start();
+if (empty($_SESSION['id']))
+  header("Location: index.php");
 require('config/connection.inc.php');
+if (empty($_SESSION))
+  header("Location: index.php");
 $req = $pdo->prepare("SELECT * FROM `images` WHERE images.userid = ? ORDER BY `images`.`creating_date` ASC");
 $req->execute([$_SESSION['id']]);
 $res = $req->fetchall();
@@ -14,6 +18,7 @@ $res = $req->fetchall();
 </head>
 <body>
 <?php include 'header.php';?>
+<main>
 <div class="profile">
     <div class="profile-image">
         <img src="img/pdp.svg" alt="">
@@ -35,6 +40,7 @@ $res = $req->fetchall();
         <?php endforeach ?>
     </div>
 </div>
+</main>
 <?php include 'footer.php';?>
 </body>
 </html>

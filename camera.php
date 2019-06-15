@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (empty($_SESSION))
+if (empty($_SESSION['id']))
   header("Location: index.php");
 require('config/connection.inc.php');
 require("includes/mylibrary.php");
@@ -12,37 +12,43 @@ if (isset($_POST['btndelete'])) {
     $app->delete_image($_POST['imageid'],$pdo);
     header("Location: camera.php");
 }
-if (isset($_POST['save']) || isset($_POST['upload'])) {
-   header("Location: camera.php");
-}
+// if (isset($_POST['form_submitted'])) {
+//    header("Location: camera.php");
+// }
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" media="screen" href="css/camagru.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="css/camagru.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="css/bootstrap.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 <?php include 'header.php';?>
+<main>
 <div class="col-sm-4 col-sm-offset-4" style="margin-top: 20px;">
-<form action="camera.php" method="post">
+<form action="camera.php" method="post" id="myForm">
 <table>
 <tr><td width="490px" height="390px"><canvas id="canvas" width="490px" height="390px"></canvas>
+<input type="hidden" name="form_submitted" value="1" />
 <img class="image2" id="mask" src="" style="visibility: hidden;" width="200px" height="200px"/>
-      <video id="player" class="" autoplay ></video></td></tr>
-      <tr><td><select class="btn-primary center-block" id="effect" disabled>
+      <video id="player" width="100%"class="" autoplay ></video></td></tr>
+      <tr><td><select class="btn-primary center-block" style="margin-top: 10px;"id="effect" disabled>
       <option value="off">Select your mask</option>
       <option value="batman">Batman</option>
       <option value="joker">Joker</option>
       <option value="iron">Iron Man</option>
     </select></td></tr>
-    <tr><td><input type="submit" class="btn center-block" name="save" disabled id="save-btn" value="Capture"/>
+    <tr><td><input type="button" class="btn center-block"    style="display: block; margin-top: 10px;" name="save" disabled id="save-btn" value="Capture" />
     </td></tr>
-    <tr><td><input type="submit" class="btn center-block" name="upload" disabled id="upload-btn"value="Upload"/></td></tr>
-    <tr><td><input  type="file" id="inp"></td></tr>
+    <tr><td><input type="button" class="btn center-block" style="margin-top: 10px;" name="upload" disabled id="upload-btn"value="Upload" /></td></tr>
+    <tr><td><input  type="file" id="inp"  accept="image/*"></td></tr>
 </table>
 </form>
+<label class="switch">
+        <input type="checkbox" name="mail" id="myCheckbox" onclick="OnChangeCheckbox(this)">
+    <span class="slider round"></span>
+</label>
 </div>
 <div class="col-sm-4" style="margin-top: 20px; overflow-y: scroll; max-height: 390px;">
 <table>
@@ -55,7 +61,8 @@ if (isset($_POST['save']) || isset($_POST['upload'])) {
 <?php endforeach ?>
 </table>
 </div>
-<script src="js/camera.js"></script>
+</main>
 <?php include 'footer.php';?>
+<script src="js/camera.js"></script>
 </body>
 </html>

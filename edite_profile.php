@@ -1,7 +1,11 @@
 <?php
 session_start();
+if (empty($_SESSION['id']))
+  header("Location: index.php");
 require("includes/mylibrary.php");
 require('config/connection.inc.php');
+if (empty($_SESSION))
+  header("Location: index.php");
 $app = new User();
 $save_message = "";
 if (isset($_POST['btnsave']))
@@ -11,7 +15,10 @@ if (isset($_POST['btnsave']))
     } else {
         $mailing = "";
     }
-    if ($app->Update_profile($_POST['username'],$_POST['pwd'],$_POST['newpwd'],$_POST['email'],$mailing,$pdo))
+    if (!$app->checkpassword($_POST['newpwd']) && !empty($_POST['newpwd']))
+    {
+        $save_message = "your password are weak ,  <= 8 charachter , at leaste one number , at least one lettre";
+    } else if ($app->Update_profile($_POST['username'],$_POST['pwd'],$_POST['newpwd'],$_POST['email'],$mailing,$pdo))
     {
         $save_message = "";
     }
@@ -31,6 +38,7 @@ if (isset($_POST['btnsave']))
 </head>
 <body>
 <?php include 'header.php';?>
+<main>
 <div class="row signup_row">
     <div class="bg col-sm-4 col-sm-offset-4">
             <p class="txt_signup">
@@ -56,6 +64,7 @@ if (isset($_POST['btnsave']))
             </form>
     </div>
 </div>
+</main>
 <?php include 'footer.php';?>
 </body>
 </html>

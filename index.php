@@ -1,6 +1,6 @@
 <?php
 session_start();
-if(!empty($_SESSION))
+if(!empty($_SESSION['id']))
 {
     header("Location: home.php");
 }
@@ -15,7 +15,13 @@ if (isset($_POST['btnsignup'])) {
         $register_error_message = 'Email is already in use!';
     } else if ($app->isUsername($_POST['username'],$pdo)) {
         $register_error_message = 'Username is already in use!';
-    } else {
+    } else if (!$app->checkpassword($_POST['pwd']))
+    {
+        $register_error_message = "your password are weak ,  <= 8 charachter , at leaste one number , at least one lettre";
+    } else if((($_POST['captcha']!=$_SESSION['code'] && !empty($_SESSION['code']))|| !isset($_POST['captcha']))){
+        $register_error_message = "Captcha incorrect";
+    }
+    else {
             $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyz';
             $verificationCode = str_shuffle($permitted_chars);
             $destinataire = $_POST['email'];
@@ -27,7 +33,7 @@ if (isset($_POST['btnsignup'])) {
             Pour activer votre compte, veuillez cliquer sur le lien ci dessous
             ou copier/coller dans votre navigateur internet.
              
-            http://localhost:8001/42-Camagru/activation.php?log='.urlencode($_POST['username']).'&cle='.urlencode($verificationCode).'
+            http://localhost:8001/mdichkou/activation.php?log='.urlencode($_POST['username']).'&cle='.urlencode($verificationCode).'
              
              
             ---------------
@@ -53,6 +59,7 @@ if (isset($_POST['btnsignup'])) {
 </head>
 <body>
 <?php include 'includes/header.inc.php';?>
+<main>
 <div class="row signup_row">
     <div class="bg col-sm-4 col-sm-offset-4">
             <p class="txt_signup">
@@ -68,10 +75,13 @@ if (isset($_POST['btnsignup'])) {
                 <input type="text" name="name" placeholder="Full Name" required class="btn_max form-control"><br>
                 <input type="text" name="username" placeholder="Username" required class="btn_max form-control"><br>
                 <input type="password" name="pwd" placeholder="Password" class="btn_max form-control"><br>
-                <button type="submit" name="btnsignup" class="btn center-block">Sign up</button><br>
+                <input type="text" name="captcha"/>
+                <img src="image.php" onclick="this.src='image.php?' + Math.random();" alt="captcha" style="cursor:pointer;">
+                <button type="submit" name="btnsignup" style="margin-top: 10px;"class="btn center-block">Sign up</button><br>
             </form>
     </div>
 </div>
+</main>
 <?php include 'footer.php';?>
-</body>
+<body>
 </html>

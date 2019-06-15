@@ -1,9 +1,10 @@
 <?php
 session_start();
+if (empty($_POST) || empty($_SESSION))
+    header("Location: ../index.php");
 $id = $_SESSION['id'];
-$folder = "/42-Camagru/images/";
+$folder = "/mdichkou/images/";
 $destinationFolder = $_SERVER['DOCUMENT_ROOT'] . $folder;
-$maxFileSize = 2 * 1024 * 1024;
 list($type, $data) = explode(';', $_POST['data']);
 list(, $data)      = explode(',', $data);
 $postdata = $_POST['data'];
@@ -12,8 +13,10 @@ if (empty($_POST['data']))
     exit(json_encode(["success" => false, "reason" => "Not a post data"]));
 if (strpos($postdata,"image/png"))
     $ext = ".png";
-if (strpos($postdata,"image/jpeg"))
+else if (strpos($postdata,"image/jpeg"))
     $ext = ".jpeg";
+else
+    exit(json_encode(['success' => false, 'reason' => 'the image need to be png or jpeg']));
 $filename = date("d_m_Y_H_i_s") . "-" . time() . "-" ."$id$ext";
 $destinationPath = "$destinationFolder$filename";
 function generateImage($img,$file)
@@ -22,8 +25,6 @@ function generateImage($img,$file)
     $img = str_replace('data:image/jpeg;base64,', '', $img);
     $img = str_replace(' ', '+', $img);
     $img = base64_decode($img);
-    if(strlen($img) > $maxFileSize)
-      exit(json_encode(['success'=>false, 'reason'=>"file size exceeds {$maxFileSize} Mb"]));
     $success = file_put_contents($file, $img);
     return $success;
 }

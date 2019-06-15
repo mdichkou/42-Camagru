@@ -1,6 +1,6 @@
 <?php
 require('connection.inc.php');
-$usereq = ("CREATE TABLE `users` (
+$usereq = ("CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
@@ -12,7 +12,7 @@ $usereq = ("CREATE TABLE `users` (
   PRIMARY KEY (`id`)
 )");
 
-   $picturereq = (" CREATE TABLE `images` (
+   $picturereq = (" CREATE TABLE IF NOT EXISTS `images` (
     `imageid` int(11) NOT NULL AUTO_INCREMENT,
     `img_name` varchar(255) NOT NULL,
     `userid` int(11) NOT NULL,
@@ -20,14 +20,14 @@ $usereq = ("CREATE TABLE `users` (
     PRIMARY KEY (`imageid`)
   )");
    
-   $commentreq = (" CREATE TABLE `comment` (
+   $commentreq = (" CREATE TABLE IF NOT EXISTS `comment` (
     `comment` varchar(255) NOT NULL,
     `imageid` int(11) NOT NULL,
     `userid` int(11) NOT NULL,
     `creating_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
   )");
    
-   $likereq = (" CREATE TABLE `likes` (
+   $likereq = (" CREATE TABLE IF NOT EXISTS `likes` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `user_id` int(11) NOT NULL,
     `picture_id` int(11) NOT NULL,
@@ -37,10 +37,10 @@ $usereq = ("CREATE TABLE `users` (
    
    if ($pdo->query($usereq) && $pdo->query($picturereq) && $pdo->query($commentreq) && $pdo->query($likereq))
    {
-      header("Location: ../index.php");
+    die("Failed to create tables and databases");
    }
     else
     {
-        die("Failed to create tables");
+        die("Tables Already Exists");
     }
 ?>

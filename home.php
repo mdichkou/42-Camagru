@@ -3,7 +3,21 @@ session_start();
 require('config/connection.inc.php');
 require('includes/mylibrary.php');
 $app = new User();
-$req = $pdo->prepare("SELECT * FROM `images` i , users u WHERE i.userid = u.id  ORDER BY i.creating_date DESC");
+$limit = 5;
+
+$req = $pdo->prepare("SELECT * FROM `images` i");
+$req->execute();
+$total_results = $req->rowCount();
+$total_pages = ceil($total_results/$limit);
+if (isset($_GET['page']) && $total_pages >= $_GET['page'] && $_GET['page'] > 0) {
+    $page = $_GET['page'];
+} else{
+    $page = 1;
+}
+$starting_limit = ($page-1)*$limit;
+$req = $pdo->prepare("SELECT * FROM `images` i , users u WHERE i.userid = u.id  ORDER BY i.creating_date DESC LIMIT :v1 , :v2");
+$req->bindValue(':v1', $starting_limit, PDO::PARAM_INT);
+$req->bindValue(':v2', $limit, PDO::PARAM_INT);
 $req->execute();
 $res = $req->fetchall();
 ?>
@@ -17,13 +31,14 @@ $res = $req->fetchall();
 </head>
 <body>
 <?php 
-if (empty($_SESSION))
+if (empty($_SESSION['id']))
     include 'includes/header.inc.php';
 else
     include 'header.php';
 ?>
+<main>
   <?php foreach ($res as $elem):?>
-    <div class="card ">
+    <div class="card">
     <div class="card-header">
     <div class="profile-info">
         <div class="name"><?=htmlspecialchars($elem['username'])?></div>
@@ -42,16 +57,16 @@ else
         $like = $reql->fetch();
     ?>
     <?php 
-    if (!empty($_SESSION))
-        echo ($app->isLiked($_SESSION['id'],$elem['imageid'],$pdo) == 1) ? '<button name="btnunlike" class="button-unlike">UnLike</button>' 
-    : '<button name="btnlike" class="button-like">Like</button>';
+    if (!empty($_SESSION['id']))
+        echo ($app->isLiked($_SESSION['id'],$elem['imageid'],$pdo) == 1) ? '<input type="submit" name="btnunlike" class="button-unlike" value="UnLike">' 
+    : '<input type="submit" name="btnlike" class="button-like" value="Like">';
     else
-        echo '<button name="btnlike" class="button-like" disabled>Like</button>';
+        echo '<input type="submit" name="btnlike" class="button-like" disabled value="Like">';
      ?>
     <span><?=$like['nb']?> Likes</span>
         <input type="text"  name="subject" class="comment-input" placeholder="Comment">
         <input type="text" name="imageid" hidden value="<?=htmlspecialchars($elem['imageid'])?>">
-        <?php echo (empty($_SESSION)) ? '<input type="submit" name="btncomment" value="Post" class="comment-btn" disabled>' : '<input type="submit" name="btncomment" value="Post" class="comment-btn">' ?>
+        <?php echo (empty($_SESSION['id'])) ? '<input type="submit" name="btncomment" value="Post" class="comment-btn" disabled>' : '<input type="submit" name="btncomment" value="Post" class="comment-btn">' ?>
       </form>
       <ul id="comment-stream" class="comment-stream" style="overflow-y: scroll; max-height: 105px;">
         <?php
@@ -64,11 +79,17 @@ else
                 $reqt = $pdo->prepare("SELECT username FROM users WHERE id = ?");
                 $reqt->execute([$elemnt['userid']]);
                 $name = $reqt->fetch();
-                echo $name['username'] . ":   " . $elemnt['comment'];?></li>
+                echo htmlspecialchars($name['username']) . ":   " . htmlspecialchars($elemnt['comment']);?></li>
         <?php endforeach ?>
     </ul>
     </div>
     <?php endforeach ?>
-	<?php include 'footer.php';?>
+    <div>
+    <?php for ($page=1; $page <= $total_pages ; $page++):?>
+        <a href='<?php echo "?page=$page"; ?>' class="links"><?php  echo $page; ?></a>
+    <?php endfor; ?>
+    </div>
+</main>
+<?php include 'footer.php';?>
 </body>
 </html>
