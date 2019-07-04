@@ -3,19 +3,24 @@ session_start();
 require('config/connection.inc.php');
 require('includes/mylibrary.php');
 $app = new User();
+if (empty($_GET['log']) || empty($_GET['cle']))
+    header("Location: index.php");
 if (!empty($_GET['log']))
 {
     $_SESSION['log'] = $_GET['log'];
     $_SESSION['cle'] = $_GET['cle'];
 }
+
 $login_error_pw = "";
 $stmt = $pdo->prepare("SELECT cle FROM users WHERE username = ?");
 if($stmt->execute([$_SESSION['log']]) && $row = $stmt->fetch())
   {
     $clebdd = $row['cle'];
   }
-  if (isset($_POST['btnchange']))
-  {
+if($_SESSION['cle'] != $clebdd)
+    header("Location: index.php");
+if (isset($_POST['btnchange']))
+{
     if($_SESSION['cle'] == $clebdd) {
         if ($app->checkpassword($_POST['newpw']))
         {

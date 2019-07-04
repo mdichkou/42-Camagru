@@ -32,7 +32,7 @@ if (isset($_POST['btnlogin'])) {
 </head>
 <body>
 <?php include 'includes/header.inc.php';?>
-<main>
+<main class="container">
 <div class="row signup_row">
     <div class="bg col-sm-4 col-sm-offset-4">
             <p class="txt_signup">

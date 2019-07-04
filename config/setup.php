@@ -37,10 +37,6 @@ $usereq = ("CREATE TABLE IF NOT EXISTS `users` (
    
    if ($pdo->query($usereq) && $pdo->query($picturereq) && $pdo->query($commentreq) && $pdo->query($likereq))
    {
-    die("Failed to create tables and databases");
+    header("Location: ../index.php");
    }
-    else
-    {
-        die("Tables Already Exists");
-    }
 ?>

@@ -12,9 +12,9 @@ if (isset($_POST['btndelete'])) {
     $app->delete_image($_POST['imageid'],$pdo);
     header("Location: camera.php");
 }
-// if (isset($_POST['form_submitted'])) {
-//    header("Location: camera.php");
-// }
+if (isset($_POST['form_submitted'])) {
+   header("Location: camera.php");
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -39,9 +39,9 @@ if (isset($_POST['btndelete'])) {
       <option value="joker">Joker</option>
       <option value="iron">Iron Man</option>
     </select></td></tr>
-    <tr><td><input type="button" class="btn center-block"    style="display: block; margin-top: 10px;" name="save" disabled id="save-btn" value="Capture" />
+    <tr><td><input type="button" class="btn center-block"    style="display: block; margin-top: 10px;" name="save" disabled id="save-btn" value="Capture" onclick="this.form.submit()"/>
     </td></tr>
-    <tr><td><input type="button" class="btn center-block" style="margin-top: 10px;" name="upload" disabled id="upload-btn"value="Upload" /></td></tr>
+    <tr><td><input type="button" class="btn center-block" style="margin-top: 10px;" name="upload" disabled id="upload-btn"value="Upload" onclick="this.form.submit()"/></td></tr>
     <tr><td><input  type="file" id="inp"  accept="image/*"></td></tr>
 </table>
 </form>
@@ -53,7 +53,7 @@ if (isset($_POST['btndelete'])) {
 <div class="col-sm-4" style="margin-top: 20px; overflow-y: scroll; max-height: 390px;">
 <table>
 <?php foreach ($res as $elem): ?>
-<tr><td><img width="300px" height="200px"src="<?=htmlspecialchars($elem['img_name'])?>"/>
+<tr><td><img width="300px" src="<?=htmlspecialchars($elem['img_name'])?>"/>
 <form action="camera.php" method="post">
     <input type="text" name="imageid" hidden value="<?=htmlspecialchars($elem['imageid'])?>">
     <input type="submit" class="btn delete-btn center-block" name="btndelete" value="Delete"/>

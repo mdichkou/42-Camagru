@@ -19,6 +19,10 @@ if (isset($_POST['btnsignup'])) {
     {
         $register_error_message = "your password are weak ,  <= 8 charachter , at leaste one number , at least one lettre";
     } else if((($_POST['captcha']!=$_SESSION['code'] && !empty($_SESSION['code']))|| !isset($_POST['captcha']))){
+    } else if (!$app->checkUsername($_POST['username']))
+    {
+        $register_error_message = "your username not validate ,  <= 5 charachter , at least one lettre";
+    } else if((($_POST['captcha']!=$_SESSION['code'] && !empty($_SESSION['code']))|| !isset($_POST['captcha']))){
         $register_error_message = "Captcha incorrect";
     }
     else {
@@ -59,7 +63,7 @@ if (isset($_POST['btnsignup'])) {
 </head>
 <body>
 <?php include 'includes/header.inc.php';?>
-<main>
+<main class="container">
 <div class="row signup_row">
     <div class="bg col-sm-4 col-sm-offset-4">
             <p class="txt_signup">
@@ -74,8 +78,8 @@ if (isset($_POST['btnsignup'])) {
                 <input type="text" name="email" placeholder=" Email" required  class="btn_max form-control"><br>
                 <input type="text" name="name" placeholder="Full Name" required class="btn_max form-control"><br>
                 <input type="text" name="username" placeholder="Username" required class="btn_max form-control"><br>
-                <input type="password" name="pwd" placeholder="Password" class="btn_max form-control"><br>
-                <input type="text" name="captcha"/>
+                <input type="password" name="pwd" placeholder="Password" required class="btn_max form-control"><br>
+                <input type="text" required  name="captcha"/>
                 <img src="image.php" onclick="this.src='image.php?' + Math.random();" alt="captcha" style="cursor:pointer;">
                 <button type="submit" name="btnsignup" style="margin-top: 10px;"class="btn center-block">Sign up</button><br>
             </form>

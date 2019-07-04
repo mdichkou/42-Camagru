@@ -18,9 +18,15 @@ if (isset($_POST['btnsave']))
     if (!$app->checkpassword($_POST['newpwd']) && !empty($_POST['newpwd']))
     {
         $save_message = "your password are weak ,  <= 8 charachter , at leaste one number , at least one lettre";
+    } else if (!$app->checkUsername($_POST['username']))
+    {
+        $save_message = "your username not validate ,  <= 5 charachter , at least one lettre";
     } else if ($app->Update_profile($_POST['username'],$_POST['pwd'],$_POST['newpwd'],$_POST['email'],$mailing,$pdo))
     {
         $save_message = "";
+    } else if (!$app->Update_profile($_POST['username'],$_POST['pwd'],$_POST['newpwd'],$_POST['email'],$mailing,$pdo))
+    {
+        $save_message = 'Username Or Email Already exist!';
     }
     else
     {

@@ -28,7 +28,6 @@ Ceci est un mail automatique, Merci de ne pas y répondre.';
 if(mail($destinataire, $sujet, $message, $entete))
 {
     $message_send = "A Reset password email were sent to Your email !";
-    $_POST['btnsend'] = "";
 }
 }
 }

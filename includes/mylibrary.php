@@ -32,6 +32,16 @@ class User {
         }     
         return ($error);
     }
+    public function checkUsername($usernam) {
+        $error = true;
+        if (strlen($usernam) < 5) {
+            $error = false;
+        }
+        if (!preg_match("#[a-zA-Z]+#", $usernam)) {
+            $error = false;
+        }     
+        return ($error);
+    }
     public function Update_profile($username,$pwd,$newpwd,$email,$mailing,$pdo) {
         $req = $pdo->prepare("SELECT * FROM users WHERE id = ?");
         $req->execute([$_SESSION['id']]);
@@ -40,11 +50,15 @@ class User {
         if (password_verify($pwd, $res['passowrd'])) {
             if ($username != $res['username'])
             {
+                if ($this->isUsername($username,$pdo))
+                    return false;
                 $message .= "\nyour username are modified";
                 $pdo->prepare("UPDATE users SET username = ? WHERE id = ?")->execute([$username,$_SESSION['id']]);
                 $_SESSION['username'] = $username;
             }
             if ($email != $res['email']) {
+                if ($this->isEmail($email,$pdo))
+                    return false;
                 $message .= "\nyour email are modified";
                 $pdo->prepare("UPDATE users SET email = ? WHERE id = ?")->execute([$email,$_SESSION['id']]);
                 $_SESSION['email'] = $email;
